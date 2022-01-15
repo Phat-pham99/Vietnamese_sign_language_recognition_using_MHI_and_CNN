@@ -2,7 +2,13 @@
 
 This is a model to classify Vietnamese sign language using Motion history image (MHI) algorithm and CNN. 
 We have 6 classes for most basic vocabolaries disabled people need in daily life :
-+ 
+
++ Uống (Drink)
++ Đói (Hungry)
++ Vui (Happy)
++ Giận (Angry)
++ Tôi (Me)
+and class None for indicating no actions. 
 
 <img src="https://user-images.githubusercontent.com/57822898/149609096-197e01bd-e1e2-4eb0-afb7-f47c7f487251.png" width=70% height=70%>
 <img src="https://user-images.githubusercontent.com/57822898/149609119-0b23e938-6dec-4148-847a-603704895511.png" width=70% height=70%>
