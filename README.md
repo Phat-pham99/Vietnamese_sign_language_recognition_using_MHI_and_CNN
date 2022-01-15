@@ -8,7 +8,7 @@ We have 6 classes for most basic vocabolaries disabled people need in daily life
 + Vui (Happy)
 + Giận (Angry)
 + Tôi (Me)
-and class None for indicating no actions. 
++ and class None for indicating no actions. 
 
 
 <img src="https://user-images.githubusercontent.com/57822898/149609119-0b23e938-6dec-4148-847a-603704895511.png" width=70% height=70%>
