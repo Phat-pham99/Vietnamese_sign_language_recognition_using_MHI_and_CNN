@@ -2,7 +2,7 @@
 
 This is a model to classify Vietnamese sign language using Motion history image (MHI) algorithm and CNN. 
 
-
+<img src="https://user-images.githubusercontent.com/57822898/149609096-197e01bd-e1e2-4eb0-afb7-f47c7f487251.png" width=50% height=50%>
 ![none]("https://user-images.githubusercontent.com/57822898/149609096-197e01bd-e1e2-4eb0-afb7-f47c7f487251.png"width=50% height=50%)
 ![uong](https://user-images.githubusercontent.com/57822898/149609119-0b23e938-6dec-4148-847a-603704895511.png)
 ![toi](https://user-images.githubusercontent.com/57822898/149609124-849727d8-f14a-40ad-b80c-6aa2e453715a.png)
