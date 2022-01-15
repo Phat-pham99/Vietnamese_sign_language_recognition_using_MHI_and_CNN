@@ -18,13 +18,13 @@ and class None for indicating no actions.
 <img src="https://user-images.githubusercontent.com/57822898/149609124-849727d8-f14a-40ad-b80c-6aa2e453715a.png" width=70% height=70%>
 <img src="https://user-images.githubusercontent.com/57822898/149609096-197e01bd-e1e2-4eb0-afb7-f47c7f487251.png" width=70% height=70%>
 
-#Requirements
-Python3
-Numpy
-Tensorflow
-Keras
-opencv
-Matplotlib
-Seaborn 
-
+### Requirements
+  Python3</br>
+  Numpy</br>
+  Tensorflow</br>
+  Keras</br>
+  opencv</br>
+  Matplotlib</br>
+  Seaborn</br>
+ 
 
