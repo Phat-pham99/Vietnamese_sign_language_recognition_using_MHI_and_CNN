@@ -1,7 +1,7 @@
 ## Vietnamese_sign_lagnuage_recognition_using_MHI_and_CNN
 
 This is a model to classify Vietnamese sign language using Motion history image (MHI) algorithm and CNN. 
-We have 6 classes for most basic vocabolaries disabled people need in daily life :
+We have 6 classes for most basic vocabolary disabled people need in daily life :
 
 + Uống (Drink)
 + Đói (Hungry)
