@@ -26,6 +26,9 @@ First proposed by [A.Bobick et.al](https://ieeexplore.ieee.org/document/910878) 
 
 This algorithm conveniently enables CNN to recognize actions, not just still images. Since sign languages are consisted of dynamic gesutres, it's perfect for this project.
 
+###Usage : 
+_ Use MHI.py to capture images for dataset.
+
 
 
 ### Requirements
