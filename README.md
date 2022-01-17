@@ -19,7 +19,7 @@ We have 6 classes for most basic vocabolary disabled people need in daily life :
 <img src="https://user-images.githubusercontent.com/57822898/149609096-197e01bd-e1e2-4eb0-afb7-f47c7f487251.png" width=70% height=70%>
 
 ## Motion history images :
-First proposed in [The recognition of human movement using temporal templates] (https://ieeexplore.ieee.org/document/910878)
+First proposed in [here](https://ieeexplore.ieee.org/document/910878)
 
 ### Requirements
   Python3</br>
