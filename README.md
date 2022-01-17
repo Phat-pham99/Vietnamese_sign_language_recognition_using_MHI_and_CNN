@@ -19,7 +19,9 @@ We have 6 classes for most basic vocabolary disabled people need in daily life :
 <img src="https://user-images.githubusercontent.com/57822898/149609096-197e01bd-e1e2-4eb0-afb7-f47c7f487251.png" width=70% height=70%>
 
 ## Motion history images :
-First proposed in [here](https://ieeexplore.ieee.org/document/910878)
+First proposed by [ A. Bobick et.al](https://ieeexplore.ieee.org/document/910878) as a method to capture both spatial and temporal information of an action.
+![MHI](https://user-images.githubusercontent.com/57822898/149686430-49bfd4e4-71ff-4a62-9aa4-4fba928a509f.gif)
+
 
 ### Requirements
   Python3</br>
