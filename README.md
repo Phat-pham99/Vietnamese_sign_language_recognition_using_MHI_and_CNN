@@ -18,9 +18,14 @@ We have 6 classes for most basic vocabolary disabled people need in daily life :
 <img src="https://user-images.githubusercontent.com/57822898/149609124-849727d8-f14a-40ad-b80c-6aa2e453715a.png" width=70% height=70%>
 <img src="https://user-images.githubusercontent.com/57822898/149609096-197e01bd-e1e2-4eb0-afb7-f47c7f487251.png" width=70% height=70%>
 
-## Motion history images :
-First proposed by [A.Bobick et.al](https://ieeexplore.ieee.org/document/910878) as a method to capture both spatial and temporal information of an action.
-<gif src="https://user-images.githubusercontent.com/57822898/149686690-332a9d7b-50dc-46ef-8c1d-268d12671fbd.gif" width=70% height=70%>
+## Motion history images (MHI)
+First proposed by [A.Bobick et.al](https://ieeexplore.ieee.org/document/910878) as a method to capture both spatial and temporal information of an action. Here some demonstration. 
+
+
+<img src="https://user-images.githubusercontent.com/57822898/149686938-62984bcf-1dd3-4349-a062-a883df4deb0e.gif" width=50% height=50%>
+
+This algorithm conveniently enables CNN to recognize actions, not just still images. Since sign languages are consisted of dynamic gesutres, it's perfect for this project.
+
 
 
 ### Requirements
