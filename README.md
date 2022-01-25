@@ -1,4 +1,4 @@
-## Vietnamese sign lagnuage recognition using MHI and CNN
+## Vietnamese sign language recognition using MHI and CNN
 
 This is a model to classify Vietnamese sign language using Motion history image (MHI) algorithm and CNN. 
 We have 6 classes for most basic vocabolary disabled people need in daily life :
