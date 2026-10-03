@@ -1,0 +1,33 @@
+camera:
+  source: 0
+  width: 320
+  height: 240
+  mirror: true
+
+mhi:
+  duration: 5.0
+  threshold: 50
+  display_scale: 1.5
+
+model:
+  input_shape: [160, 160, 3]
+  num_classes: 6
+  weights_path: models/cnn_mhi_model.h5
+
+training:
+  data_dir: data/processed_mhi
+  image_size: [160, 160]
+  test_size: 0.2
+  val_size: 0.3
+  random_state: 5
+  epochs: 20
+  batch_size: 32
+  learning_rate: 0.0002
+
+gestures:
+  uong: 0
+  doi: 1
+  vui: 2
+  gian: 3
+  toi: 4
+  none: 5

@@ -1,3 +1,35 @@
+
+# AGENT DIRECTIVE: Repository Modernization & Academic Refactoring
+
+**Target Repository:** `Vietnamese_sign_language_recognition_using_MHI_and_CNN`
+**Author:** Phạm Hồng Phát
+**Context:** HCMUT Capstone Thesis (**Grade: 9.17 / 10.0** | B.Eng. in Engineering Physics)
+**Primary Audience:** Admissions Committees & Technical Reviewers for Erasmus Mundus Joint Masters:
+
+- **DEAI (Dependable AI):** Evaluates resource-constrained Edge AI, latency/memory profiling, hardware-software co-design, and execution safety.
+- **EDISS (Data-Intensive Software Systems):** Evaluates software architecture, clean code principles, modular package structure, and CLI workflow engineering.
+- **CoDAS (Communications, Signals & Data Science):** Evaluates spatial-temporal signal transformation (MHI), mathematical formulation, and computer vision feature extraction.
+
+---
+
+## EXECUTIVE GOAL
+
+Transform this historical capstone repository from an undergraduate-era project into an **auditable, production-grade, and academically rigorous open-source Edge AI benchmark**.
+
+You must execute this refactoring in two distinct, sequential phases:
+
+1. **Phase 1: `README.md` Overhaul** (Primacy-driven, cognitively ergonomized visual and academic front-page).
+2. **Phase 2: Source Code Architecture & Package Refactoring** (Modularizing, typing, modernizing, and benchmarking the codebase).
+
+---
+
+## PHASE 1: `README.md` OVERHAUL
+
+Replace the existing `README.md` completely with the following structured Markdown. Ensure all mathematical equations, diagrams, and benchmark tables are rendered cleanly.
+
+### `README.md` Specification
+
+````markdown
 # Real-Time Edge AI Sign Language Recognition using MHI + 2D-CNN
 
 [![Academic Verification](https://img.shields.io/badge/HCMUT%20Thesis%20Grade-9.17%20%2F%2010.0-blue.svg)](#academic-verification)
@@ -45,9 +77,9 @@ Where:
 
 Evaluated on embedded single-board targets under thermal and memory constraints:
 
-| Metric | Embedded Target (Raspberry Pi 3B+) | Development Host (Google Colab) |
+| Metric | Embedded Target (Raspberry Pi 3B+) | Development Host (x86_64) |
 | :--- | :--- | :--- |
-| **Target OS / Environment** | Raspberry Pi OS (Debian armhf) | Google Colab (Ubuntu, x86_64, GPU) |
+| **Target OS / Environment** | Raspberry Pi OS (Debian armhf) | Linux (x86_64 Ubuntu 22.04) |
 | **Inference Engine** | TFLite / OpenCV DNN | TensorFlow 2.x Keras |
 | **Frame Preprocessing (MHI)** | ~4.2 ms / frame | ~0.8 ms / frame |
 | **Model Inference Latency** | ~28.5 ms / frame | ~3.1 ms / frame |
@@ -88,4 +120,4 @@ Evaluated on embedded single-board targets under thermal and memory constraints:
 │   └── live_inference.py   # Real-Time Webcam/PiCamera Edge Pipeline
 ├── requirements.txt        # Verified Dependency Manifest
 └── README.md
-```
+````
