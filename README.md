@@ -1,13 +1,13 @@
 # Real-Time Edge AI Sign Language Recognition using MHI + 2D-CNN
 
-[![Academic Verification](https://img.shields.io/badge/HCMUT%20Thesis%20Grade-9.17%20%2F%2010.0-blue.svg)](#academic-verification)
+[![Academic Verification](<https://img.shields.io/badge/HCMUT%20Thesis%20Grade-9.17%20%2F%2010.0-blue.svg>)](#academic-verification)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://www.tensorflow.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)](https://opencv.org/)
-[![Target Hardware](https://img.shields.io/badge/Hardware-Raspberry%20Pi%204-red.svg)](#hardware--performance-benchmarks)
-[![Compute](https://img.shields.io/badge/Compute-CPU--only%20(no%20GPU%20HAT)-informational.svg)](#hardware--performance-benchmarks)
+[![Target Hardware](<https://img.shields.io/badge/Hardware-Raspberry%20Pi%204-red.svg>)](#hardware--performance-benchmarks)
+[![Compute](<https://img.shields.io/badge/Compute-CPU--only%20(no%20GPU%20HAT)-informational.svg>)](#hardware--performance-benchmarks)
 
-> **Abstract:** A resource-efficient, real-time spatial-temporal gesture recognition pipeline designed for embedded Edge AI execution. By compressing video frame time-series into single-channel **Motion History Images (MHI)** prior to spatial classification via a lightweight 2D Convolutional Neural Network (CNN), this system achieves **stable ~30 FPS** inference on resource-constrained single-board computers running **strictly on CPU** — a bare Raspberry Pi with **no GPU HAT, no NPU, and no external accelerator attached** — without requiring heavy 3D-CNNs or GPU acceleration.
+> **Abstract:** A resource-efficient, real-time spatial-temporal gesture recognition pipeline designed for embedded Edge AI execution. By compressing video frame time-series into single-channel **Motion History Images (MHI)** prior to spatial classification via a lightweight 2D Convolutional Neural Network (CNN), this system achieves **stable ~30 FPS** inference on resource-constrained single-board computers running **strictly on CPU** — a bare Raspberry Pi with **no GPU HAT, no NPU, and no external accelerator attached** — without requiring heavy 3D-CNNs or GPU acceleration. **MHI is the enabling piece of this project:** it is what lets a plain 2D-CNN digest a temporal video stream fast enough to run on a tiny Raspberry Pi.
 
 ---
 
@@ -28,14 +28,18 @@
 ▼
 [ Real-Time Inference ] <── [ Lightweight 2D-CNN ] <── [ Spatial Crop ]
 
+> **Why MHI is the enabler (not just an optimization):** A video stream is a time series. Classifying it directly forces one of two expensive paths: run a CNN on every independent frame (which loses motion direction and wastes the temporal signal), or use a 3D-CNN / ConvLSTM over a sliding window — which multiplies compute and activation memory by the temporal depth and is not feasible on a Raspberry Pi CPU. MHI collapses the motion history of a gesture into a single 2D frame, so a small 2D-CNN can consume *temporal* information at frame rate. **That compression is precisely what makes real-time video inference on a tiny, accelerator-free board possible.**
 
 ### Mathematical Formulation: Motion History Image (MHI)
 
 Temporal motion is encoded into a single 2D spatial representation where pixel intensity decay represents motion recency:
 
-$$H_{\tau}(x, y, t) = \begin{cases} \tau & \text{if } \Psi(x, y, t) = 1 \\ \max(0, H_{\tau}(x, y, t - 1) - 1) & \text{otherwise} \end{cases}$$
+$$
+H_{\tau}(x, y, t) = \begin{cases} \tau & \text{if } \Psi(x, y, t) = 1 \\ \max(0, H_{\tau}(x, y, t - 1) - 1) & \text{otherwise} \end{cases}
+$$
 
 Where:
+
 * $\Psi(x, y, t)$ is a binary frame-difference mask calculated via $\lvert I(x,y,t) - I(x,y,t-1) \rvert > \xi$.
 * $\tau$ represents the temporal history window duration (decay parameter).
 * $H_{\tau}(x, y, t)$ yields a grayscale image matrix where bright pixels represent recent movement and darker gradients encode trajectory history.
@@ -68,21 +72,21 @@ Six classes covering the most basic vocabulary needed in daily life, including a
 
 Evaluated on embedded single-board targets under thermal and memory constraints:
 
-| Metric | Embedded Target (Raspberry Pi 4) | Development Host (Google Colab) |
-| :--- | :--- | :--- |
-| **Target OS / Environment** | Raspberry Pi OS (Debian armhf) | Google Colab (Ubuntu, x86_64, GPU) |
-| **Inference Engine** | TFLite / OpenCV DNN | TensorFlow 2.x Keras |
-| **Frame Preprocessing (MHI)** | ~4.2 ms / frame | ~0.8 ms / frame |
-| **Model Inference Latency** | ~33 ms / frame (i.e. the 30 FPS real-time budget) | ~3 ms / frame |
-| **Compute Accelerator** | **CPU-only — no GPU HAT / NPU attached** | CUDA GPU (Colab T4) |
-| **End-to-End Pipeline FPS** | **~28--30 FPS (Real-Time)** | **>120 FPS** |
-| **Peak RAM Footprint** | < 180 MB | < 450 MB |
-| **Gesture Classification Accuracy** | **99.5%** (Test Set) | **99.5%** (Test Set) |
+| Metric                                    | Embedded Target (Raspberry Pi 4)                  | Development Host (Google Colab)    |
+| :---------------------------------------- | :------------------------------------------------ | :--------------------------------- |
+| **Target OS / Environment**         | Raspberry Pi OS (Debian armhf)                    | Google Colab (Ubuntu, x86_64, GPU) |
+| **Inference Engine**                | TFLite / OpenCV DNN                               | TensorFlow 2.x Keras               |
+| **Frame Preprocessing (MHI)**       | ~4.2 ms / frame                                   | ~0.8 ms / frame                    |
+| **Model Inference Latency**         | ~33 ms / frame (i.e. the 30 FPS real-time budget) | ~3 ms / frame                      |
+| **Compute Accelerator**             | **CPU-only — no GPU HAT / NPU attached**   | CUDA GPU (Colab T4)                |
+| **End-to-End Pipeline FPS**         | **~28--30 FPS (Real-Time)**                 | **>120 FPS**                 |
+| **Peak RAM Footprint**              | < 180 MB                                          | < 450 MB                           |
+| **Gesture Classification Accuracy** | **99.5%** (Test Set)                        | **99.5%** (Test Set)         |
 
 Empirical validation from the thesis (see full thesis PDF for details):
 
-| Learning Curve | Test Evaluation | Confusion Matrix |
-| :---: | :---: | :---: |
+|                Learning Curve                |                Test Evaluation                |                 Confusion Matrix                 |
+| :------------------------------------------: | :--------------------------------------------: | :----------------------------------------------: |
 | ![Learning Curve](assets/learning_curve.png) | ![Test Evaluation](assets/test_evaluation.png) | ![Confusion Matrix](assets/confusion_matrix.png) |
 
 > **Note:** Every embedded benchmark above was measured on a **strictly CPU-only Raspberry Pi 4** — no GPU HAT, no NPU accelerator, no external co-processor was attached to the board. Despite running on commodity ARM CPU compute alone, the full pipeline sustained **stable real-time throughput at ~30 FPS** with no dropped frames or thermal throttling stalls, which is the core evidence that the MHI temporal-compression front-end — rather than additional hardware — is what makes this system edge-deployable.
@@ -93,6 +97,7 @@ Empirical validation from the thesis (see full thesis PDF for details):
 
 ## 4. Key Engineering & Dependable AI Features
 
+* **MHI Is What Saved This Project:** A sign is *motion*, not a still image — but feeding raw video into a CNN means either a 3D-CNN (too heavy) or frame-by-frame inference (loses the time dimension). MHI bridges the two: it compresses the whole gesture trajectory into one 2D frame, which is exactly what lets a small 2D-CNN infer on a video stream in real time inside the memory and compute budget of a tiny Raspberry Pi. Remove MHI, and this project does not fit the board.
 * **Resource-Bounded Compute:** Replaces compute-heavy 3D-CNN spatio-temporal convolutions with $O(1)$ temporal MHI image buffer accumulation, lowering memory footprint by over 70%.
 * **Determinism & Low Latency:** Optimized image transformation pipeline written in C++-backed OpenCV primitives for real-time camera stream consumption.
 * **Accelerator-Free Deployment:** Validated end-to-end on a **CPU-only Raspberry Pi** — no GPU HAT, no NPU, no co-processor — yet it holds a stable **~30 FPS** live inference loop, proving the latency budget is met by algorithmic design instead of bolted-on silicon.
