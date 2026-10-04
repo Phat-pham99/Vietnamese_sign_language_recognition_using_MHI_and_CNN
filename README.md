@@ -7,7 +7,7 @@
 [![Target Hardware](<https://img.shields.io/badge/Hardware-Raspberry%20Pi%204-red.svg>)](#hardware--performance-benchmarks)
 [![Compute](<https://img.shields.io/badge/Compute-CPU--only%20(no%20GPU%20HAT)-informational.svg>)](#hardware--performance-benchmarks)
 
-> **Abstract:** A resource-efficient, real-time spatial-temporal gesture recognition pipeline designed for embedded Edge AI execution. By compressing video frame time-series into single-channel **Motion History Images (MHI)** prior to spatial classification via a lightweight 2D Convolutional Neural Network (CNN), this system achieves **stable ~30 FPS** inference on resource-constrained single-board computers running **strictly on CPU** — a bare Raspberry Pi with **no GPU HAT, no NPU, and no external accelerator attached** — without requiring heavy 3D-CNNs or GPU acceleration. **MHI is the enabling piece of this project:** it is what lets a plain 2D-CNN digest a temporal video stream fast enough to run on a tiny Raspberry Pi.
+> **Abstract:** A resource-efficient, real-time spatial-temporal gesture recognition pipeline designed for embedded Edge AI execution. By compressing video frame time-series into single-channel **Motion History Images (MHI)** prior to spatial classification via a lightweight 2D Convolutional Neural Network (CNN), this system achieves **stable ~30 FPS** inference on resource-constrained single-board computers running **strictly on CPU** — a bare Raspberry Pi with **no GPU HAT, no NPU, and no external accelerator attached** — without requiring heavy 3D-CNNs or GPU acceleration. **MHI constitutes the enabling front-end of this system:** it is the transformation that allows a lightweight 2D-CNN to process a temporal video stream within the compute and memory envelope of a Raspberry Pi.
 
 ---
 
@@ -28,7 +28,7 @@
 ▼
 [ Real-Time Inference ] <── [ Lightweight 2D-CNN ] <── [ Spatial Crop ]
 
-> **Why MHI is the enabler (not just an optimization):** A video stream is a time series. Classifying it directly forces one of two expensive paths: run a CNN on every independent frame (which loses motion direction and wastes the temporal signal), or use a 3D-CNN / ConvLSTM over a sliding window — which multiplies compute and activation memory by the temporal depth and is not feasible on a Raspberry Pi CPU. MHI collapses the motion history of a gesture into a single 2D frame, so a small 2D-CNN can consume *temporal* information at frame rate. **That compression is precisely what makes real-time video inference on a tiny, accelerator-free board possible.**
+> **Why MHI is load-bearing for this pipeline:** A video stream is fundamentally a time series. Direct classification forces one of two costly alternatives: running an independent CNN on every frame (which discards the temporal structure, i.e. the direction and dynamics of the gesture), or applying a 3D-CNN / ConvLSTM over a sliding temporal window — which scales compute and activation memory with the temporal depth and is not feasible on a Raspberry Pi CPU. MHI collapses the motion history of a gesture into a single 2D plane, so that a compact 2D-CNN can consume temporal information at full frame rate. This compression is the principal reason real-time, accelerator-free video inference is achievable on a bare development board.
 
 ### Mathematical Formulation: Motion History Image (MHI)
 
@@ -97,7 +97,7 @@ Empirical validation from the thesis (see full thesis PDF for details):
 
 ## 4. Key Engineering & Dependable AI Features
 
-* **MHI Is What Saved This Project:** A sign is *motion*, not a still image — but feeding raw video into a CNN means either a 3D-CNN (too heavy) or frame-by-frame inference (loses the time dimension). MHI bridges the two: it compresses the whole gesture trajectory into one 2D frame, which is exactly what lets a small 2D-CNN infer on a video stream in real time inside the memory and compute budget of a tiny Raspberry Pi. Remove MHI, and this project does not fit the board.
+* **System-Level Enabling of Edge Deployment:** Gestures are inherently temporal, yet the deployment target is a CPU-only single-board computer. MHI bridges this gap by encoding each gesture's full motion trajectory into a single spatial frame, which is precisely what allows a compact 2D-CNN to perform real-time inference on the Raspberry Pi within its memory and compute envelope.
 * **Resource-Bounded Compute:** Replaces compute-heavy 3D-CNN spatio-temporal convolutions with $O(1)$ temporal MHI image buffer accumulation, lowering memory footprint by over 70%.
 * **Determinism & Low Latency:** Optimized image transformation pipeline written in C++-backed OpenCV primitives for real-time camera stream consumption.
 * **Accelerator-Free Deployment:** Validated end-to-end on a **CPU-only Raspberry Pi** — no GPU HAT, no NPU, no co-processor — yet it holds a stable **~30 FPS** live inference loop, proving the latency budget is met by algorithmic design instead of bolted-on silicon.
