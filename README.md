@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://www.tensorflow.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)](https://opencv.org/)
-[![Target Hardware](https://img.shields.io/badge/Hardware-Raspberry%20Pi%203B%2B%20%2F%204-red.svg)](#hardware--performance-benchmarks)
+[![Target Hardware](https://img.shields.io/badge/Hardware-Raspberry%20Pi%204-red.svg)](#hardware--performance-benchmarks)
 [![Compute](https://img.shields.io/badge/Compute-CPU--only%20(no%20GPU%20HAT)-informational.svg)](#hardware--performance-benchmarks)
 
 > **Abstract:** A resource-efficient, real-time spatial-temporal gesture recognition pipeline designed for embedded Edge AI execution. By compressing video frame time-series into single-channel **Motion History Images (MHI)** prior to spatial classification via a lightweight 2D Convolutional Neural Network (CNN), this system achieves **stable ~30 FPS** inference on resource-constrained single-board computers running **strictly on CPU** — a bare Raspberry Pi with **no GPU HAT, no NPU, and no external accelerator attached** — without requiring heavy 3D-CNNs or GPU acceleration.
@@ -68,18 +68,26 @@ Six classes covering the most basic vocabulary needed in daily life, including a
 
 Evaluated on embedded single-board targets under thermal and memory constraints:
 
-| Metric | Embedded Target (Raspberry Pi 3B+) | Development Host (Google Colab) |
+| Metric | Embedded Target (Raspberry Pi 4) | Development Host (Google Colab) |
 | :--- | :--- | :--- |
 | **Target OS / Environment** | Raspberry Pi OS (Debian armhf) | Google Colab (Ubuntu, x86_64, GPU) |
 | **Inference Engine** | TFLite / OpenCV DNN | TensorFlow 2.x Keras |
 | **Frame Preprocessing (MHI)** | ~4.2 ms / frame | ~0.8 ms / frame |
-| **Model Inference Latency** | ~28.5 ms / frame | ~3.1 ms / frame |
+| **Model Inference Latency** | ~33 ms / frame (i.e. the 30 FPS real-time budget) | ~3 ms / frame |
 | **Compute Accelerator** | **CPU-only — no GPU HAT / NPU attached** | CUDA GPU (Colab T4) |
 | **End-to-End Pipeline FPS** | **~28--30 FPS (Real-Time)** | **>120 FPS** |
 | **Peak RAM Footprint** | < 180 MB | < 450 MB |
-| **Gesture Classification Accuracy** | **94.2%** (Validation Set) | **94.2%** |
+| **Gesture Classification Accuracy** | **99.5%** (Test Set) | **99.5%** (Test Set) |
 
-> **Note:** Every embedded benchmark above was measured on a **strictly CPU-only Raspberry Pi** — no GPU HAT, no NPU accelerator, no external co-processor was attached to the board. Despite running on commodity ARM CPU compute alone, the full pipeline sustained **stable real-time throughput at ~30 FPS** with no dropped frames or thermal throttling stalls, which is the core evidence that the MHI temporal-compression front-end — rather than additional hardware — is what makes this system edge-deployable.
+Empirical validation from the thesis (see full thesis PDF for details):
+
+| Learning Curve | Test Evaluation | Confusion Matrix |
+| :---: | :---: | :---: |
+| ![Learning Curve](assets/learning_curve.png) | ![Test Evaluation](assets/test_evaluation.png) | ![Confusion Matrix](assets/confusion_matrix.png) |
+
+> **Note:** Every embedded benchmark above was measured on a **strictly CPU-only Raspberry Pi 4** — no GPU HAT, no NPU accelerator, no external co-processor was attached to the board. Despite running on commodity ARM CPU compute alone, the full pipeline sustained **stable real-time throughput at ~30 FPS** with no dropped frames or thermal throttling stalls, which is the core evidence that the MHI temporal-compression front-end — rather than additional hardware — is what makes this system edge-deployable.
+>
+> **Dataset & model (from the thesis):** 6,006 MHI frames across 6 classes (`Uống`, `Vui`, `Giận`, `Đói`, `Tôi`, `None`), 160×160 inputs, a 4-block CNN (~1.8M params), trained on Google Colab. Offline test accuracy reached **99.5%**; as expected, real-time in-the-wild accuracy is lower and depends on subject position, lighting, and camera angle — the thesis reports the most frequent confusion is between `Vui` and `Giận`.
 
 ---
 
