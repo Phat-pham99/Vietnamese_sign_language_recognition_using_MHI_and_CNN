@@ -21,8 +21,8 @@ NUM_CLASSES = 6
 
 
 def process_image(path: str | os.PathLike, image_size: tuple[int, int] = (160, 160)) -> np.ndarray:
-    img = Image.open(path)
-    img = img.resize(image_size)
+    # Grayscale MHIs are replicated to 3 channels to match the model input.
+    img = Image.open(path).convert("RGB").resize(image_size)
     return np.asarray(img)
 
 
@@ -35,7 +35,7 @@ def walk_file_tree(
     y_data: list[int] = []
     for directory, _, files in os.walk(root):
         for file in sorted(files):
-            if file.startswith(".") or file.startswith("C_"):
+            if file.startswith((".", "C_")):
                 continue
             gesture_name = GESTURE_PREFIXES.get(file[0:2])
             if gesture_name is None or gesture_name not in gestures_map:

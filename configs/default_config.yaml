@@ -5,7 +5,8 @@ camera:
   mirror: true
 
 mhi:
-  duration: 5.0
+  # Thesis: tau = 5 s at 30 fps capture -> 150 frames.
+  tau_frames: 150
   threshold: 50
   display_scale: 1.5
 

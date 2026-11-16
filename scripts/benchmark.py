@@ -29,7 +29,7 @@ def main() -> None:
     from keras.models import load_model
 
     model = load_model(args.model or cfg["model"]["weights_path"])
-    transformer = MHITransformer(duration=mhi_cfg["duration"], threshold=mhi_cfg["threshold"])
+    transformer = MHITransformer(tau=mhi_cfg["tau_frames"], threshold=mhi_cfg["threshold"])
 
     width, height = cfg["camera"]["width"], cfg["camera"]["height"]
     in_shape = tuple(cfg["model"]["input_shape"])
@@ -38,7 +38,7 @@ def main() -> None:
     for i in range(args.frames):
         frame = np.random.randint(0, 255, (height, width, 3), dtype=np.uint8)
         t0 = time.perf_counter()
-        mhi = transformer.update(frame, time.perf_counter())
+        mhi = transformer.update(frame)
         mhi_times.append((time.perf_counter() - t0) * 1e3)
 
         inp = cv.resize(mhi, (in_shape[1], in_shape[0])).astype("float32") / 255.0
