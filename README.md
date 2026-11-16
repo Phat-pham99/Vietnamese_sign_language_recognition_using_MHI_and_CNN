@@ -26,11 +26,11 @@ _At my Department of Engineering Physics -Biomedical, our mission is to ultilize
 
 _Btw, my thesis was done during the COVID pandemic, which is **before the ChatGPT Era** (AI was simple back then)._
 
-My thesis supervisor - Dr. Nguyễn Trung Hậu told me that **AI is practically useless if it requires some bulky and expensive setup with GPU and stuffs**. Technology should be human-centric, AI should be accessible and functional. That was why I came up with this thesis project:
+My thesis supervisor - Dr. Nguyễn Trung Hậu told me that **AI wil practically be useless if it requires some bulky and expensive setup with GPU and stuffs**. AI should be human-centric, accessible and functional. That was why I came up with this thesis project:
 
 The main goal was not about accuracy, but on how to fit a usable CNN model into tiny Raspberry Pi device with acceptable performance. I chose Motion History Image (MHI) algorith as a way to include both spatial and temporal information of an action into 1 single image. Which then can be processed with a simple 2D-CNN model.
 
-Another thing which I love that It was the first time I got hand out with a real **Linux** machine. Which is the root of my love for **Linux** ever since !
+Another thing which I love that It was the first time I got hand on experience with a real **Linux** machine. Which is the root of my love for **Linux** ever since !
 
 ---
 
@@ -48,7 +48,6 @@ Another thing which I love that It was the first time I got hand out with a real
 * **Full thesis (Vietnamese, 54 pages):**  [LVTN_Phạm Hồng Phát _1712577_Huỳnh Thế Nhân_1712427.pdf][thesis]
 
 Page numbers cited as “p. N” in this README refer to that PDF.
-
 
 ---
 
