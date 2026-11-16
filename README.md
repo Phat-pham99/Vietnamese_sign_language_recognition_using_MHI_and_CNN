@@ -3,7 +3,7 @@
 [![Academic Verification](<https://img.shields.io/badge/HCMUT%20Thesis%20Grade-9.17%20%2F%2010.0-blue.svg>)](#1-academic-verification--context)
 [![Python](https://img.shields.io/badge/Python-3.10--3.13-brightgreen.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/TensorFlow-2.16%2B-orange.svg)](https://www.tensorflow.org/)
-[![OpenCV](https://img.shields.io/badge/OpenCV-core%20only-green.svg)](https://opencv.org/)
+[![OpenCV](<https://img.shields.io/badge/OpenCV-core%20only-green.svg>)](https://opencv.org/)
 [![Target Hardware](<https://img.shields.io/badge/Hardware-Raspberry%20Pi%204-red.svg>)](#3-hardware--performance-benchmarks)
 [![Compute](<https://img.shields.io/badge/Compute-CPU--only%20(no%20GPU%20HAT)-informational.svg>)](#3-hardware--performance-benchmarks)
 
@@ -27,23 +27,24 @@
 Page numbers cited as “p. N” in this README refer to that PDF.
 
 [thesis]: LVTN_Phạm%20Hồng%20Phát%20_1712577_Huỳnh%20Thế%20Nhân_1712427.pdf
-
 ---
 
 ## 2. System Architecture
 
-```text
-[ Camera 320×240 ] ──> [ Frame differencing |ΔI| > ξ ] ──> [ MHI update (τ frames) ]
-                                                                    │
-                                                                    ▼
-[ Label + confidence ] <── [ 2D-CNN, 1.8 M params ] <── [ Resize 160×160, scale to [0, 1] ]
+```mermaid
+flowchart LR
+    A["Camera<br/>320×240 @ 30 fps"] --> B["Frame differencing<br/>#124;ΔI#124; > ξ"]
+    B --> C["MHI update<br/>decay over τ frames"]
+    C --> D["Resize 160×160<br/>scale to 0–1"]
+    D --> E["2D-CNN<br/>1.8 M params"]
+    E --> F["Label + confidence"]
 ```
 
 > **Why MHI is load-bearing for this pipeline:** A video stream is fundamentally a time series. Direct classification forces one of two costly alternatives: running an independent CNN on every frame (which discards the temporal structure, i.e. the direction and dynamics of the gesture), or applying a 3D-CNN / ConvLSTM over a sliding temporal window, whose compute and activation memory scale with the temporal depth. MHI collapses the motion history of a gesture into a single 2D plane, so a compact 2D-CNN can consume temporal information at the camera frame rate. This compression is what made accelerator-free video inference practical on a single-board computer.
 
 ### Mathematical Formulation: Motion History Image (MHI)
 
-Temporal motion is encoded into a single 2D spatial representation where pixel intensity decay represents motion recency ([thesis], §2.4, pp. 23–26):
+Temporal motion is encoded into a single 2D spatial representation where pixel intensity decay represents motion recency ([thesis][thesis], §2.4, pp. 23–26):
 
 $$
 H_{\tau}(x, y, t) = \begin{cases} \tau & \text{if } \Psi(x, y, t) = 1 \\ \max(0, H_{\tau}(x, y, t - 1) - 1) & \text{otherwise} \end{cases}
@@ -83,39 +84,24 @@ Six classes covering the most basic vocabulary needed in daily life, including a
 
 ## 3. Hardware & Performance Benchmarks
 
-Only values reported in the thesis or measured with [scripts/benchmark.py](scripts/benchmark.py) are listed.
+All values below are reported in the thesis.
 
-### 3.1 Thesis-reported deployment (Raspberry Pi 4)
+### Thesis-reported deployment (Raspberry Pi 4)
 
-| Item | Value | Source |
-| :--- | :--- | :--- |
-| **Embedded target** | Raspberry Pi 4 Model B: Broadcom BCM2711, quad-core Cortex-A72 @ 1.5 GHz, 4 GB LPDDR4. The documented setup includes no accelerator. | pp. 14–17 |
-| **Peripherals** | OV5647 5 MP camera module, 3.5" 320×480 touchscreen | pp. 15–16 |
-| **Camera input** | 320×240 ROI at 30 fps; MHI with $\tau = 5$ and $\xi = 50$ | p. 29 |
-| **Dataset** | 6,006 MHI images captured on the Pi, 6 classes, resized to 160×160 | p. 30 |
-| **Model** | 4 conv blocks + 1,066-unit dense layer, **1,805,020 parameters** (Keras) | pp. 33–34 |
-| **Training** | Google Colab, batch size 32, 20 epochs, RMSprop + `ReduceLROnPlateau` | p. 34; pp. 47–51 |
-| **Offline accuracy** | **99.5%** on the held-out test set (`accuracy: 0.9950`); 6 `Vui` samples misclassified as `Giận` | pp. 35–36 |
-| **Real-time evaluation** | Run live and assessed qualitatively. Predictions respond quickly to sign changes, but fluctuate between classes. | pp. 37–39 |
+| Item                           | Value                                                                                                                                | Source            |
+| :----------------------------- | :----------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
+| **Embedded target**      | Raspberry Pi 4 Model B: Broadcom BCM2711, quad-core Cortex-A72 @ 1.5 GHz, 4 GB LPDDR4. The documented setup includes no accelerator. | pp. 14–17        |
+| **Peripherals**          | OV5647 5 MP camera module, 3.5" 320×480 touchscreen                                                                                 | pp. 15–16        |
+| **Camera input**         | 320×240 ROI at 30 fps; MHI with $\tau = 5$ and $\xi = 50$                                                                       | p. 29             |
+| **Dataset**              | 6,006 MHI images captured on the Pi, 6 classes, resized to 160×160                                                                  | p. 30             |
+| **Model**                | 4 conv blocks + 1,066-unit dense layer, **1,805,020 parameters** (Keras)                                                       | pp. 33–34        |
+| **Training**             | Google Colab, batch size 32, 20 epochs, RMSprop + `ReduceLROnPlateau`                                                              | p. 34; pp. 47–51 |
+| **Offline accuracy**     | **99.5%** on the held-out test set (`accuracy: 0.9950`); 6 `Vui` samples misclassified as `Giận`                        | pp. 35–36        |
+| **Real-time evaluation** | Run live and assessed qualitatively. Predictions respond quickly to sign changes, but fluctuate between classes.                     | pp. 37–39        |
 
 The thesis does not report per-frame latency or memory measurements. The “30.0 fps” overlay in its real-time screenshots (pp. 37–39) is the camera's configured rate from `cam.get(cv.CAP_PROP_FPS)` (p. 53), not measured loop throughput.
 
 > **Class count:** The English abstract (p. 11) mentions 27 sign classes. The reported 99.5% result is for the 6-class model (pp. 30–36). An earlier 25-class model trained well, but performed poorly in real time and was replaced (pp. 27, 39).
-
-### 3.2 Measured on a development host (CPU-only)
-
-`python scripts/benchmark.py` (300 frames + 20 warm-up, seeded synthetic 320×240 frames, batch size 1):
-
-| Stage | Mean | p50 | p95 |
-| :--- | ---: | ---: | ---: |
-| MHI update | 0.48 ms | 0.47 ms | 0.51 ms |
-| Resize + normalize | 0.15 ms | 0.14 ms | 0.16 ms |
-| CNN inference (Keras) | 16.99 ms | 16.72 ms | 18.59 ms |
-| **End-to-end (excl. capture/display)** | **17.61 ms (≈ 57 FPS)** | 17.33 ms | 19.21 ms |
-
-Host: Intel Core i5-8250U (8 logical CPUs, no GPU), Linux x86_64, Python 3.12.13, TensorFlow 2.20.0, OpenCV 5.0.0. Process RSS: 66 MiB baseline, 708 MiB after loading TensorFlow and the model, and 727 MiB peak.
-
-> To reproduce on a Raspberry Pi, install the package and run `python scripts/benchmark.py`. It prints the host, software versions, per-stage latency percentiles, and RSS so results can be audited.
 
 Empirical validation from the thesis (Figures 35–37, pp. 35–36):
 
@@ -129,9 +115,9 @@ Empirical validation from the thesis (Figures 35–37, pp. 35–36):
 
 * **System-Level Enabling of Edge Deployment:** Gestures are inherently temporal, yet the deployment target is a CPU-only single-board computer. MHI encodes each gesture's motion trajectory into a single spatial frame, which allows a compact 2D-CNN to run on the Raspberry Pi.
 * **Bounded Temporal Memory:** The temporal state is one `uint8` MHI plus the previous frame (≈ 307 KB at 320×240), independent of the history length $\tau$. A sliding-window 3D-CNN instead buffers $\tau$ frames.
-* **Low, Predictable Preprocessing Cost:** The MHI update uses vectorized NumPy / OpenCV-core operations (sub-millisecond on the development host). It does not require `opencv-contrib`.
+* **Low Preprocessing Cost:** The MHI update needs only a few vectorized NumPy / OpenCV-core operations per frame, and it does not require `opencv-contrib`.
 * **Accelerator-Free Deployment:** Deployed on a Raspberry Pi 4 CPU with no GPU HAT, NPU, or co-processor.
-* **Modular Infrastructure:** Dataset loading, MHI extraction, model definition, training, live inference, and benchmarking are separated into a typed package and configuration-driven CLIs, with CI linting and a CPU smoke benchmark.
+* **Modular Infrastructure:** Dataset loading, MHI extraction, model definition, training, live inference, and benchmarking are separated into a typed package and configuration-driven CLIs.
 
 ### Known Limitations (from the thesis, §4.3 and Ch. 5, pp. 39–43)
 
@@ -149,7 +135,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt   # exact verified versions
 pip install -e .                  # installs the `src` package used by the scripts
 
-python scripts/benchmark.py                      # latency + memory profile
+python scripts/benchmark.py                      # MHI + inference latency
 python scripts/live_inference.py --source 0      # webcam / PiCamera (needs a display)
 python scripts/train.py --data-dir data/processed_mhi
 ```
@@ -158,11 +144,11 @@ All parameters, including camera size, $\tau$, $\xi$, model input, training hype
 
 **Dataset:** The thesis dataset is not distributed. [scripts/train.py](scripts/train.py) expects MHI images (grayscale or RGB, any size) anywhere under `data/processed_mhi/`, labelled by the first two characters of the filename:
 
-| Prefix | Class | Prefix | Class |
-| :--- | :--- | :--- | :--- |
-| `uo` | Uống (Drink) | `gi` | Giận (Angry) |
-| `do` | Đói (Hungry) | `to` | Tôi (Me) |
-| `vu` | Vui (Happy) | `no` | None |
+| Prefix | Class          | Prefix | Class         |
+| :----- | :------------- | :----- | :------------ |
+| `uo` | Uống (Drink)  | `gi` | Giận (Angry) |
+| `do` | Đói (Hungry) | `to` | Tôi (Me)     |
+| `vu` | Vui (Happy)    | `no` | None          |
 
 Files starting with `.` or `C_` are skipped. `data/raw/` is reserved for source recordings.
 
@@ -172,7 +158,6 @@ Files starting with `.` or `C_` are skipped. `data/raw/` is reserved for source 
 
 ```text
 .
-├── .github/workflows/ci.yml  # Ruff lint/format + CPU smoke benchmark
 ├── assets/                   # Thesis evaluation figures
 ├── configs/
 │   └── default_config.yaml   # Camera, MHI, model, training & class configuration
@@ -188,7 +173,7 @@ Files starting with `.` or `C_` are skipped. `data/raw/` is reserved for source 
 │   ├── model.py              # Keras 2D-CNN architecture definition
 │   └── utils.py              # Config, preprocessing, FPS & overlay helpers
 ├── scripts/
-│   ├── benchmark.py          # Per-stage latency percentiles & RSS profiler
+│   ├── benchmark.py          # MHI & inference latency benchmark
 │   ├── train.py              # Training, evaluation & confusion matrix
 │   └── live_inference.py     # Real-time webcam / PiCamera pipeline
 ├── pyproject.toml            # Package metadata, dependency ranges, Ruff config
