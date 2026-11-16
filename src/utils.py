@@ -16,6 +16,13 @@ def load_config(path: str | Path = "configs/default_config.yaml") -> dict:
         return yaml.safe_load(f)
 
 
+def to_model_input(mhi: np.ndarray, input_shape: tuple[int, int, int]) -> np.ndarray:
+    """Resize an MHI to (H, W) and scale to [0, 1] as a batch of one."""
+    height, width = input_shape[:2]
+    resized = cv.resize(mhi, (width, height)).astype(np.float32) / 255.0
+    return resized.reshape(1, *input_shape)
+
+
 class FPSMeter:
     def __init__(self, window: int = 30) -> None:
         self._times: deque[float] = deque(maxlen=window)
@@ -41,7 +48,13 @@ def overlay_info(frame: np.ndarray, lines: list[str]) -> np.ndarray:
     out = frame.copy()
     for i, text in enumerate(lines):
         cv.putText(
-            out, text, (12, 30 + i * 25), cv.FONT_HERSHEY_SIMPLEX, 0.6,
-            (255, 0, 0), 2, lineType=cv.LINE_AA,
+            out,
+            text,
+            (12, 30 + i * 25),
+            cv.FONT_HERSHEY_SIMPLEX,
+            0.6,
+            (255, 0, 0),
+            2,
+            lineType=cv.LINE_AA,
         )
     return out

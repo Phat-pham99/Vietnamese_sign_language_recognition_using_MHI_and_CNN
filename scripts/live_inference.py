@@ -3,17 +3,12 @@
 from __future__ import annotations
 
 import argparse
-import sys
-import time
-from pathlib import Path
 
 import cv2 as cv
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from src.mhi import MHITransformer
-from src.utils import FPSMeter, draw_grid, load_config, overlay_info
+from src.utils import FPSMeter, draw_grid, load_config, overlay_info, to_model_input
 
 
 def main() -> None:
@@ -34,16 +29,16 @@ def main() -> None:
 
     from keras.models import load_model
 
-    model = load_model(args.model or cfg["model"]["weights_path"])
+    model = load_model(args.model or cfg["model"]["weights_path"], compile=False)
+    input_shape = tuple(cfg["model"]["input_shape"])
     id_to_name = {v: k for k, v in cfg["gestures"].items()}
 
     cam = cv.VideoCapture(source)
     cam.set(cv.CAP_PROP_FRAME_WIDTH, cam_cfg["width"])
     cam.set(cv.CAP_PROP_FRAME_HEIGHT, cam_cfg["height"])
 
-    transformer = MHITransformer(duration=mhi_cfg["duration"], threshold=mhi_cfg["threshold"])
+    transformer = MHITransformer(tau=mhi_cfg["tau_frames"], threshold=mhi_cfg["threshold"])
     fps_meter = FPSMeter()
-    in_size = tuple(cfg["model"]["input_shape"][:2][::-1])
 
     while True:
         ret, frame = cam.read()
@@ -51,20 +46,19 @@ def main() -> None:
             break
         if cam_cfg.get("mirror", True):
             frame = cv.flip(frame, 1)
-        timestamp = time.perf_counter()
-        mhi = transformer.update(frame, timestamp)
+        mhi = transformer.update(frame)
         fps = fps_meter.tick()
 
-        inp = cv.resize(mhi, (in_size[0], in_size[1])).astype("float32") / 255.0
-        inp = inp.reshape(1, *cfg["model"]["input_shape"])
-        preds = model.predict(inp, verbose=0)[0]
+        preds = model(to_model_input(mhi, input_shape), training=False).numpy()[0]
         label = id_to_name[int(np.argmax(preds))]
         score = float(np.max(preds)) * 100
 
         vis = cv.resize(mhi, None, fx=mhi_cfg["display_scale"], fy=mhi_cfg["display_scale"])
         cv.imshow("Motion_history_image", vis)
         frame_out = draw_grid(frame, cam_cfg["width"], cam_cfg["height"])
-        frame_out = overlay_info(frame_out, [f"{label} {score:.0f}%", f"{fps:.1f} FPS", f"thr {mhi_cfg['threshold']}"])
+        frame_out = overlay_info(
+            frame_out, [f"{label} {score:.0f}%", f"{fps:.1f} FPS", f"thr {mhi_cfg['threshold']}"]
+        )
         cv.imshow("Original", frame_out)
 
         key = cv.waitKey(5) & 0xFF
