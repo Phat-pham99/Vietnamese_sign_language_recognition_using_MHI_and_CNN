@@ -11,22 +11,45 @@
 
 ---
 
+## Why This Project Was Born
+
+<!--
+Write this section yourself. Thesis material you may draw on:
+- Ch. 1.1, p. 12: 1.2 million adults (1.37% of the population) with hearing/speech disabilities, 2019 national survey.
+- Ch. 1.1, p. 12: few hearing people know sign language, so it becomes a barrier as well as a bridge.
+- Ch. 1.2, p. 12: goal of an affordable, portable Raspberry Pi device with camera and screen.
+- Ch. 1.3, p. 12: image-based MHI chosen over sensor gloves for cost, speed, and skin-colour independence.
+- Ch. 5, p. 43: long-term aim of sign-to-text/speech translation.
+-->
+
+_At my Department of Engineering Physics -Biomedical, our mission is to ultilize techology to better people lives. We do research and produce human-centric techology, including Machine learning/ Deep learning and embedded systems._ 
+
+_Btw, my thesis was done during the COVID pandemic, which is **before the ChatGPT Era** (AI was simple back then)._
+
+My thesis supervisor - Dr. Nguyễn Trung Hậu told me that **AI is practically useless if it requires some bulky and expensive setup with GPU and stuffs**. Technology should be human-centric, AI should be accessible and functional. That was why I came up with this thesis project:
+
+The main goal was not about accuracy, but on how to fit a usable CNN model into tiny Raspberry Pi device with acceptable performance. I chose Motion History Image (MHI) algorith as a way to include both spatial and temporal information of an action into 1 single image. Which then can be processed with a simple 2D-CNN model.
+
+Another thing which I love that It was the first time I got hand out with a real **Linux** machine. Which is the root of my love for **Linux** ever since !
+
+---
+
 ## 1. Academic Verification & Context
 
 * **Thesis Title (official, Vietnamese):** *Thiết bị nhận dạng ngôn ngữ ký hiệu cầm tay dành cho người khuyết tật*
   (English: *A Handheld Sign Language Recognition Device for People with Disabilities*)
 * **Task statement:** Build a CNN-based sign language recognition model on the Raspberry Pi 4 platform.
-* **Institution:** Ho Chi Minh City University of Technology (HCMUT), Faculty of Applied Science, Department of Biomedical Engineering Physics
+* **Institution:** Ho Chi Minh City University of Technology (HCMUT), Faculty of Applied Science, Department of Engineering Physics -Biomedical
 * **Degree Program:** B.Eng. in Engineering Physics (Biomedical Engineering Specialization)
 * **Supervisor:** Dr. Nguyễn Trung Hậu
 * **Period:** 28 February 2021 – 18 June 2021
 * **Capstone Evaluation Grade:** **9.17 / 10.0** (Evaluated by Academic Council)
 * **Authors:** Phạm Hồng Phát ([phatpham.work](https://phatpham.work)) and Huỳnh Thế Nhân
-* **Full thesis (Vietnamese, 54 pages):** [LVTN_Phạm Hồng Phát _1712577_Huỳnh Thế Nhân_1712427.pdf][thesis]
+* **Full thesis (Vietnamese, 54 pages):**  [LVTN_Phạm Hồng Phát _1712577_Huỳnh Thế Nhân_1712427.pdf][thesis]
 
 Page numbers cited as “p. N” in this README refer to that PDF.
 
-[thesis]: LVTN_Phạm%20Hồng%20Phát%20_1712577_Huỳnh%20Thế%20Nhân_1712427.pdf
+
 ---
 
 ## 2. System Architecture
@@ -180,3 +203,5 @@ Files starting with `.` or `C_` are skipped. `data/raw/` is reserved for source 
 ├── requirements.txt          # Exact verified dependency versions
 └── README.md
 ```
+
+[thesis]: LVTN_Phạm%20Hồng%20Phát%20_1712577_Huỳnh%20Thế%20Nhân_1712427.pdf
